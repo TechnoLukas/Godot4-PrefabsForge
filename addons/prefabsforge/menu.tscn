@@ -1,0 +1,174 @@
+[gd_scene load_steps=7 format=3 uid="uid://cv6rhhic8gthl"]
+
+[ext_resource type="Script" path="res://addons/prefabsforge_old/menu.gd" id="1_n8x5g"]
+[ext_resource type="FontFile" uid="uid://cjic5ndik1tqq" path="res://addons/prefabsforge_old/212Keyboard-lmRZ.otf" id="2_4clm2"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_j8bou"]
+font = ExtResource("2_4clm2")
+font_size = 101
+
+[sub_resource type="LabelSettings" id="LabelSettings_gamby"]
+font = ExtResource("2_4clm2")
+font_size = 101
+font_color = Color(1, 0.219608, 0.219608, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_o37re"]
+font = ExtResource("2_4clm2")
+font_size = 101
+font_color = Color(0.219608, 1, 0.388235, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_0hmo5"]
+font = ExtResource("2_4clm2")
+font_size = 101
+font_color = Color(0.219608, 0.466667, 1, 1)
+
+[node name="Prefabs Forge" type="Control"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_n8x5g")
+
+[node name="menu" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="menu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="menu/VBoxContainer"]
+layout_mode = 2
+
+[node name="rotate_x" type="Button" parent="menu/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.219608, 0.219608, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.219608, 0.219608, 1)
+theme_override_colors/font_hover_color = Color(1, 0.219608, 0.219608, 1)
+theme_override_colors/font_focus_color = Color(1, 0.219608, 0.219608, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 0.219608, 0.219608, 1)
+theme_override_colors/font_disabled_color = Color(1, 0.219608, 0.219608, 1)
+text = "rotate x"
+text_overrun_behavior = 4
+
+[node name="rotate_y" type="Button" parent="menu/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.219608, 1, 0.388235, 1)
+theme_override_colors/font_pressed_color = Color(0.219608, 1, 0.388235, 1)
+theme_override_colors/font_hover_color = Color(0.219608, 1, 0.388235, 1)
+theme_override_colors/font_focus_color = Color(0.219608, 1, 0.388235, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.219608, 1, 0.388235, 1)
+theme_override_colors/font_disabled_color = Color(0.219608, 1, 0.388235, 1)
+text = "rotate y
+"
+text_overrun_behavior = 3
+
+[node name="rotate_z" type="Button" parent="menu/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.219608, 0.466667, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.219608, 0.466667, 1, 1)
+theme_override_colors/font_hover_color = Color(0.219608, 0.466667, 1, 1)
+theme_override_colors/font_focus_color = Color(0.219608, 0.466667, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.219608, 0.466667, 1, 1)
+theme_override_colors/font_disabled_color = Color(0.219608, 0.466667, 1, 1)
+text = "rotate z
+"
+text_overrun_behavior = 2
+
+[node name="rotation_angle" type="SpinBox" parent="menu/VBoxContainer"]
+layout_mode = 2
+focus_next = NodePath("../../..")
+max_value = 180.0
+value = 90.0
+update_on_text_changed = true
+select_all_on_focus = true
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="menu/VBoxContainer"]
+layout_mode = 2
+
+[node name="arrange_x" type="Button" parent="menu/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "arrange x"
+text_overrun_behavior = 4
+
+[node name="arrange_y" type="Button" parent="menu/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "arrange y
+"
+text_overrun_behavior = 3
+
+[node name="arrange_z" type="Button" parent="menu/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "arrange z"
+text_overrun_behavior = 2
+
+[node name="arrange_on_grid" type="Button" parent="menu/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "arrange on grid
+"
+text_overrun_behavior = 2
+
+[node name="HSeparator" type="HSeparator" parent="menu/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="decompose" type="Button" parent="menu/VBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+text = "decompose"
+text_overrun_behavior = 4
+
+[node name="add_collision" type="Button" parent="menu/VBoxContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+text = "add collision"
+text_overrun_behavior = 4
+
+[node name="HSeparator2" type="HSeparator" parent="menu/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="menu/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="menu/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "g"
+label_settings = SubResource("LabelSettings_j8bou")
+
+[node name="Label3" type="Label" parent="menu/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "s"
+label_settings = SubResource("LabelSettings_gamby")
+
+[node name="Label4" type="Label" parent="menu/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "q"
+label_settings = SubResource("LabelSettings_o37re")
+
+[node name="Label2" type="Label" parent="menu/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+text = "t"
+label_settings = SubResource("LabelSettings_0hmo5")
+
+[connection signal="gui_input" from="menu/VBoxContainer/rotation_angle" to="." method="_on_rotation_angle_gui_input"]
