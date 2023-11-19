@@ -24,12 +24,16 @@ var mesh2 : MeshInstance3D
 var point1 = {"placed"=false,
 			  "visible"=true,
 			  "position_2d"=Vector2(0,0),
-			  "position_3d"=Vector3(0,0,0)}
+			  "position_3d"=Vector3(0,0,0),
+			  "mesh"=null,
+			  "idx"=null}
 			
 var point2 = {"placed"=false,
 			  "visible"=true,
 			  "position_2d"=Vector2(0,0),
-			  "position_3d"=Vector3(0,0,0)}
+			  "position_3d"=Vector3(0,0,0),
+			  "mesh"=null,
+			  "idx"=null}
 
 var camera
 var mouse : Vector2
@@ -64,13 +68,21 @@ func _process(delta):
 	for p in mesh_vertices_2d:
 		distance_point_to_mouse.append(mouse.distance_to(p))
 		if mouse.distance_to(p) < 12:
-			if not point1.placed: point1.position_3d=update_point(mesh_vertices_3d[mesh_vertices_2d.find(p)])
-			if not point1.placed: point1.visible=true
-			if point1.placed and not point2.placed: point2.position_3d=update_point(mesh_vertices_3d[mesh_vertices_2d.find(p)])
-			if point1.placed and not point2.placed: point2.visible=true
-					
-	point1.position_2d=EditorInterface.get_editor_viewport_3d().get_camera_3d().unproject_position(point1.position_3d)
-	point2.position_2d=EditorInterface.get_editor_viewport_3d().get_camera_3d().unproject_position(point2.position_3d)
+			if not point1.placed:
+				point1.mesh=mesh_current
+				point1.idx=mesh_vertices_2d.find(p)
+				point1.visible=true
+			if point1.placed and not point2.placed: 
+				point2.mesh=mesh_current
+				point2.idx=mesh_vertices_2d.find(p)
+				point2.visible=true
+	
+	if point1.idx and point1.mesh: point1.position_3d=update_point(point1.mesh, point1.idx)
+	if point2.idx and point2.mesh: point2.position_3d=update_point(point2.mesh, point2.idx)
+	
+	if point1.position_3d: point1.position_2d=EditorInterface.get_editor_viewport_3d().get_camera_3d().unproject_position(point1.position_3d)
+	if point2.position_3d: point2.position_2d=EditorInterface.get_editor_viewport_3d().get_camera_3d().unproject_position(point2.position_3d)
+	
 	if event is InputEventMouseButton and not selection_mode:
 		if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
 			if mouse.distance_to(point1.position_2d) < 12:
@@ -128,19 +140,22 @@ func _selection_changed():
 			
 func update_points():
 	if mesh_current == null: return
+	if mesh_current.mesh == null: return
 	mesh_vertices_3d = PackedVector3Array(mesh_current.mesh.get_faces())
 	mesh_vertices_2d = PackedVector2Array([])
 	for v in mesh_vertices_3d:
-		v = update_point(v)
+		v = update_point(mesh_current,mesh_vertices_3d.find(v))
 		var point_2d = EditorInterface.get_editor_viewport_3d().get_camera_3d().unproject_position(v)
 		mesh_vertices_2d.append(point_2d)
 		
-func update_point(vertex):
-	vertex = vertex.rotated(Vector3(0,0,1), mesh_current.rotation.z)
-	vertex = vertex.rotated(Vector3(1,0,0), mesh_current.rotation.x)
-	vertex = vertex.rotated(Vector3(0,1,0), mesh_current.rotation.y)
-	vertex = vertex + mesh_current.position
-	return vertex
+func update_point(mesh,vertex_index):
+	if mesh == null: return
+	var mesh_vertices = PackedVector3Array(mesh.mesh.get_faces())
+	mesh_vertices[vertex_index] = mesh_vertices[vertex_index].rotated(Vector3(0,0,1), mesh.rotation.z)
+	mesh_vertices[vertex_index] = mesh_vertices[vertex_index].rotated(Vector3(1,0,0), mesh.rotation.x)
+	mesh_vertices[vertex_index] = mesh_vertices[vertex_index].rotated(Vector3(0,1,0), mesh.rotation.y)
+	mesh_vertices[vertex_index] = mesh_vertices[vertex_index] + mesh.position
+	return mesh_vertices[vertex_index]
 	
 func check_object(object):
 	return object is MeshInstance3D
