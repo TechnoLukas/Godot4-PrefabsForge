@@ -1,5 +1,20 @@
-[gd_scene format=3 uid="uid://btv8mc4otdwrh"]
+[gd_scene load_steps=2 format=3 uid="uid://btv8mc4otdwrh"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_s21i7"]
 
 [node name="Node3D" type="Node3D"]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_s21i7")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.72686, -0.169727, -1.78415)
+mesh = SubResource("BoxMesh_s21i7")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.896587, 0.442868, 0, -0.442868, 0.896587, 0, 0, 0, 1, 0.342213, 0, 2.72251)
+mesh = SubResource("BoxMesh_s21i7")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.896587, 0.442868, 0, -0.442868, 0.896587, 0, 0, 0, 1, 0.72686, -0.169727, 1)
+mesh = SubResource("BoxMesh_s21i7")

@@ -77,8 +77,8 @@ func _process(delta):
 				point2.idx=mesh_vertices_2d.find(p)
 				point2.visible=true
 	
-	if point1.idx and point1.mesh: point1.position_3d=update_point(point1.mesh, point1.idx)
-	if point2.idx and point2.mesh: point2.position_3d=update_point(point2.mesh, point2.idx)
+	if point1.idx != null and point1.mesh != null: point1.position_3d=update_point(point1.mesh, point1.idx)
+	if point2.idx != null and point2.mesh != null: point2.position_3d=update_point(point2.mesh, point2.idx)
 	
 	if point1.position_3d: point1.position_2d=EditorInterface.get_editor_viewport_3d().get_camera_3d().unproject_position(point1.position_3d)
 	if point2.position_3d: point2.position_2d=EditorInterface.get_editor_viewport_3d().get_camera_3d().unproject_position(point2.position_3d)
@@ -91,6 +91,16 @@ func _process(delta):
 			elif mouse.distance_to(point2.position_2d) < 12:
 				in_circle=true
 				point2.placed=true
+				
+				#Final point
+				undo_redo.create_action("PrefabsForge Snap")
+				for o in selected_objects_old:
+					undo_redo.add_undo_property(o, "position", o.position) #saving UNDO action before we moved something
+					o.position=point1.position_3d+(o.position-point2.position_3d)
+					undo_redo.add_do_property(o, "position", o.position) #saving REDO after before we moved something
+				undo_redo.commit_action()
+				reset_points()
+				
 			else:
 				in_circle=false
 			
@@ -135,10 +145,9 @@ func _selection_changed():
 			ignore_selection=true
 			return
 		else:
-			point1.placed=false
-			point2.placed=false
+			reset_points()
 			
-func update_points():
+func update_points(): # recalculates all possible snap points of selected mesh
 	if mesh_current == null: return
 	if mesh_current.mesh == null: return
 	mesh_vertices_3d = PackedVector3Array(mesh_current.mesh.get_faces())
@@ -148,7 +157,7 @@ func update_points():
 		var point_2d = EditorInterface.get_editor_viewport_3d().get_camera_3d().unproject_position(v)
 		mesh_vertices_2d.append(point_2d)
 		
-func update_point(mesh,vertex_index):
+func update_point(mesh,vertex_index): #calculates point position knowing its mesh and index
 	if mesh == null: return
 	var mesh_vertices = PackedVector3Array(mesh.mesh.get_faces())
 	mesh_vertices[vertex_index] = mesh_vertices[vertex_index].rotated(Vector3(0,0,1), mesh.rotation.z)
@@ -159,3 +168,7 @@ func update_point(mesh,vertex_index):
 	
 func check_object(object):
 	return object is MeshInstance3D
+	
+func reset_points(): #stops visualising points
+	point1.placed=false
+	point2.placed=false
