@@ -19,14 +19,14 @@ var mesh_vertices_2d : PackedVector2Array # list of 2d point of current mesh
 
 var point1 = {"placed"=false,
 			  "visible"=true,
-			  "position_2d"=null,
+			  "position_2d"=Vector2(0,0),
 			  "position_3d"=null,
 			  "mesh"=null,
 			  "idx"=null}
 			
 var point2 = {"placed"=false,
 			  "visible"=true,
-			  "position_2d"=null,
+			  "position_2d"=Vector2(0,0),
 			  "position_3d"=null,
 			  "mesh"=null,
 			  "idx"=null}
@@ -60,40 +60,38 @@ func _process(delta):
 	var distance_point_to_mouse : Array
 	if not point1.placed: point1.visible=false
 	if not point2.placed: point2.visible=false
-	if mesh_vertices_2d.size()==0: return;
 	for p in mesh_vertices_2d:
 		distance_point_to_mouse.append(mouse.distance_to(p))
-		if mouse.distance_to(p) < 12: #detect if user hovers pouse position
+		if mouse.distance_to(p) < 12:
 			if not point1.placed:
 				point1.mesh=mesh_current
 				point1.idx=mesh_vertices_2d.find(p)
 				point1.visible=true
-				
 			if point1.placed and not point2.placed: 
 				point2.mesh=mesh_current
 				point2.idx=mesh_vertices_2d.find(p)
 				point2.visible=true
 	
-	if point1.idx != null and point1.mesh != null: point1.position_3d=update_point(point1.mesh, point1.idx) #recalculate points position
-	if point2.idx != null and point2.mesh != null: point2.position_3d=update_point(point2.mesh, point2.idx) #recalculate points position
+	if point1.idx != null and point1.mesh != null: point1.position_3d=update_point(point1.mesh, point1.idx)
+	if point2.idx != null and point2.mesh != null: point2.position_3d=update_point(point2.mesh, point2.idx)
 	
 	if point1.position_3d != null: point1.position_2d=EditorInterface.get_editor_viewport_3d().get_camera_3d().unproject_position(point1.position_3d)
 	if point2.position_3d != null: point2.position_2d=EditorInterface.get_editor_viewport_3d().get_camera_3d().unproject_position(point2.position_3d)
 	
-	if event is InputEventMouseButton and not multi_selection_mode:
-		if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT: 
-			if point1.position_2d != null and mouse.distance_to(point1.position_2d) < 12: #detects if user clicked on first point
+	if event is InputEventMouseButton and not selection_mode:
+		if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
+			if point1.position_2d != null and mouse.distance_to(point1.position_2d) < 12:
 				in_circle=true
 				point1.placed=true
-			elif point2.position_2d != null and mouse.distance_to(point2.position_2d) < 12: #detects if user clicked on second point
+			elif point2.position_2d != null and mouse.distance_to(point2.position_2d) < 12:
 				in_circle=true
 				point2.placed=true
 				
 				#Final point
-				undo_redo.create_action("PrefabsForge Snap") 
+				undo_redo.create_action("PrefabsForge Snap")
 				for o in selected_objects_old:
 					undo_redo.add_undo_property(o, "position", o.position) #saving UNDO action before we moved something
-					o.position=point1.position_3d+(o.position-point2.position_3d) # main snap
+					o.position=point1.position_3d+(o.position-point2.position_3d)
 					undo_redo.add_do_property(o, "position", o.position) #saving REDO after before we moved something
 				undo_redo.commit_action()
 				reset_points()
@@ -102,45 +100,43 @@ func _process(delta):
 				in_circle=false
 			
 	if event is InputEventKey:
-		multi_selection_mode = Input.is_key_pressed(KEY_SHIFT)
+		selection_mode = Input.is_key_pressed(KEY_SHIFT)
 			
-	update_points() #recalculate of points lists
-	update_overlays() #update draw method
+	update_points()
+	update_overlays()
 	
-func _forward_3d_gui_input(cam, ev): # listen to all events
-	event=ev # save all events so we can acces them in "procces"
+func _forward_3d_gui_input(cam, ev):
+	camera=cam
+	event=ev
 			
-func _handles(object): #checking if correct node #MUST for 3d plugins
+func _handles(object):
+	#print(object)
 	return object is MeshInstance3D # or object is MultiNodeEdit (strangely not implemented or nothing there)
 	
-func _forward_3d_draw_over_viewport(viewport_control): #main draw method
-	if point1.position_2d == null and point2.position_2d == null: return
+
+func _forward_3d_draw_over_viewport(viewport_control):
 	if ignore_selection: ignore_selection=false;
-	if point1.visible and not multi_selection_mode:
-		viewport_control.draw_circle(point1.position_2d,10,Color(0,0,0)) #outline
-		viewport_control.draw_circle(point1.position_2d,8,Color(0.5,0.7,0.5)) #main cicle
+	if point1.visible and not selection_mode:
+		viewport_control.draw_circle(point1.position_2d,10,Color(0,0,0))
+		viewport_control.draw_circle(point1.position_2d,8,Color(0.5,0.7,0.5))
 		
-	if point2.visible and not multi_selection_mode:
-		viewport_control.draw_circle(point2.position_2d,10,Color(0,0,0)) #outline
-		viewport_control.draw_circle(point2.position_2d,8,Color(0.7,0.5,0.5)) #main cicle
+	if point2.visible and not selection_mode:
+		viewport_control.draw_circle(point2.position_2d,10,Color(0,0,0))
+		viewport_control.draw_circle(point2.position_2d,8,Color(0.7,0.5,0.5))
 
 func _selection_changed():
 	var selected_objects = EditorInterface.get_selection().get_transformable_selected_nodes()
-	var everything_ok = true
-	for o in selected_objects: 
-		if not _handles(o): #we must check every object in the selection so there would be no errors
-			everything_ok=false
-	if (selected_objects.size()>0 and everything_ok): #checking if everything is ok
+	if selected_objects.size()>0 and check_object(selected_objects[-1]):
 		selected_objects_old = selected_objects
-		mesh_current=selected_objects[-1] #making the last item in the selection as current mesh
+		mesh_current=selected_objects[-1]
 		update_points()
 	else:
 		if ignore_selection: return
-		if in_circle: #if user clicked on the circle but mouse did not hit the mesh, we don't want to loose everything, so we need to restore it
-			for s in selected_objects_old: # VERY GLITCHY
+		if in_circle: 
+			for s in selected_objects_old:
 				EditorInterface.get_selection().add_node(s)
-				await get_tree().create_timer(0.1).timeout #timer in cuurent situation is must, without it, it doesn't work
-			mesh_current=selected_objects_old[-1] # restoring the current mesh
+				await get_tree().create_timer(0.1).timeout
+			mesh_current=selected_objects_old[-1]
 			ignore_selection=true
 			return
 		else:
@@ -155,7 +151,6 @@ func update_points(): # recalculates all possible snap points of selected mesh
 		v = update_point(mesh_current,mesh_vertices_3d.find(v))
 		var point_2d = EditorInterface.get_editor_viewport_3d().get_camera_3d().unproject_position(v)
 		mesh_vertices_2d.append(point_2d)
-
 		
 func update_point(mesh,vertex_index): #calculates point position knowing its mesh and index
 	if mesh == null: return
@@ -166,23 +161,9 @@ func update_point(mesh,vertex_index): #calculates point position knowing its mes
 	mesh_vertices[vertex_index] = mesh_vertices[vertex_index] + mesh.position
 	return mesh_vertices[vertex_index]
 	
-func reset_points(): #stops visualising points
-
-	mesh_current = null 
-	mesh_vertices_3d = PackedVector3Array([])
-	mesh_vertices_2d = PackedVector2Array([])
+func check_object(object):
+	return object is MeshInstance3D
 	
-	point1 = {"placed"=false,
-			  "visible"=true,
-			  "position_2d"=null,
-			  "position_3d"=null,
-			  "mesh"=null,
-			  "idx"=null}
-			
-	point2 = {"placed"=false,
-			  "visible"=true,
-			  "position_2d"=null,
-			  "position_3d"=null,
-			  "mesh"=null,
-			  "idx"=null}
-
+func reset_points(): #stops visualising points
+	point1.placed=false
+	point2.placed=false
