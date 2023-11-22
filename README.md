@@ -17,7 +17,7 @@ https://github.com/TechnoLukas/Godot4-PrefabsForge/assets/110934679/81585625-e48
 
 
 ### Dowload (default stuff for every plugin):
-- dowload my plugin my clicking `Code` => `Dowload ZIP`
+- dowload the plugin by clicking `Code` => `Dowload ZIP`
 - unzip the zip file
 - create folder `addons` if you don't have one yet.
 - put plugin folder inside `addons`
