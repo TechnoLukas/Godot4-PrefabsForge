@@ -1,4 +1,4 @@
-# ModelPrototyperTest 
+# Godot4-PrefabsForge 
 Plugin that lets you snap objects (or group of them) by selecting vertices.
 
 ### Comments
