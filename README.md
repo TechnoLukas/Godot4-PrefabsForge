@@ -12,10 +12,6 @@ Plugin that lets you snap objects (or group of them) by selecting vertices.
 
 https://github.com/TechnoLukas/Godot4-PrefabsForge/assets/110934679/81585625-e481-4ec7-b3fd-ad33ff27fe88
 
-
-
-
-
 ### Dowload (default stuff for every plugin):
 - dowload the plugin by clicking `Code` => `Dowload ZIP`
 - unzip the zip file
@@ -25,3 +21,9 @@ https://github.com/TechnoLukas/Godot4-PrefabsForge/assets/110934679/81585625-e48
 - result:
 - <img width="280" alt="image" src="https://github.com/TechnoLukas/Godot4-PrefabsForge/assets/110934679/afe9b90a-bcac-403a-afb9-050ac7f9f4fb">
 
+### Cool Fact!
+Using this plugin i was able to create a really cool halloween game https://luklev.itch.io/halloween-candy-hunting
+
+cool screeen shot from developmentr perspective:
+
+<img width="826" alt="image" src="https://github.com/TechnoLukas/Godot4-PrefabsForge/assets/110934679/34f39d90-eeb0-4c09-ac7b-560778abde77">
