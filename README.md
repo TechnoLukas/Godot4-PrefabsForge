@@ -24,6 +24,6 @@ https://github.com/TechnoLukas/Godot4-PrefabsForge/assets/110934679/81585625-e48
 ### Cool Fact!
 Using this plugin i was able to create a really cool halloween game https://luklev.itch.io/halloween-candy-hunting
 
-cool screeen shot from developmentr perspective:
+cool screeen shot from development perspective:
 
 <img width="826" alt="image" src="https://github.com/TechnoLukas/Godot4-PrefabsForge/assets/110934679/34f39d90-eeb0-4c09-ac7b-560778abde77">
