@@ -13,7 +13,8 @@ var undo_redo = EditorPlugin.new().get_undo_redo() #
 var selected_objects_old = [] #only to restore the selection (has only MeshInstances inside)
 var ignore_selection = false #controls selection
 
-var mesh_current : MeshInstance3D 
+var mesh_current : MeshInstance3D
+var mesh_current_origin 
 var mesh_vertices_3d : PackedVector3Array # list of 3d point of current mesh
 var mesh_vertices_2d : PackedVector2Array # list of 2d point of current mesh
 
@@ -106,12 +107,13 @@ func _process(delta):
 			
 	update_points() #recalculate of points lists
 	update_overlays() #update draw method
+
 	
 func _forward_3d_gui_input(cam, ev): # listen to all events
 	event=ev # save all events so we can acces them in "procces"
 			
 func _handles(object): #checking if correct node #MUST for 3d plugins
-	return object is MeshInstance3D # or object is MultiNodeEdit (strangely not implemented or nothing there)
+	return object is MeshInstance3D or not object.scene_file_path.is_empty() # or object is MultiNodeEdit (strangely not implemented or nothing there)
 	
 func _forward_3d_draw_over_viewport(viewport_control): #main draw method
 	if point1.position_2d == null and point2.position_2d == null: return
@@ -128,11 +130,17 @@ func _selection_changed():
 	var selected_objects = EditorInterface.get_selection().get_transformable_selected_nodes()
 	var everything_ok = true
 	for o in selected_objects: 
-		if not _handles(o): #we must check every object in the selection so there would be no errors
-			everything_ok=false
+		if o.scene_file_path.is_empty():
+			if not _handles(o): #we must check every object in the selection so there would be no errors
+				everything_ok=false
 	if (selected_objects.size()>0 and everything_ok): #checking if everything is ok
 		selected_objects_old = selected_objects
-		mesh_current=selected_objects[-1] #making the last item in the selection as current mesh
+		if not selected_objects[-1].scene_file_path.is_empty(): # Detects if selected object is a scene
+			mesh_current_origin=selected_objects[-1]
+			mesh_current=selected_objects[-1].get_children()[0]
+		else:
+			mesh_current=selected_objects[-1] #making the last item in the selection as current mesh
+		
 		update_points()
 	else:
 		if ignore_selection: return
@@ -159,11 +167,15 @@ func update_points(): # recalculates all possible snap points of selected mesh
 		
 func update_point(mesh,vertex_index): #calculates point position knowing its mesh and index
 	if mesh == null: return
+	var object_origin
+	object_origin=mesh_current_origin
+	#object_origin=mesh
+	
 	var mesh_vertices = PackedVector3Array(mesh.mesh.get_faces())
-	mesh_vertices[vertex_index] = mesh_vertices[vertex_index].rotated(Vector3(0,0,1), mesh.rotation.z)
-	mesh_vertices[vertex_index] = mesh_vertices[vertex_index].rotated(Vector3(1,0,0), mesh.rotation.x)
-	mesh_vertices[vertex_index] = mesh_vertices[vertex_index].rotated(Vector3(0,1,0), mesh.rotation.y)
-	mesh_vertices[vertex_index] = mesh_vertices[vertex_index] + mesh.position
+	mesh_vertices[vertex_index] = mesh_vertices[vertex_index].rotated(Vector3(0,0,1), object_origin.rotation.z)
+	mesh_vertices[vertex_index] = mesh_vertices[vertex_index].rotated(Vector3(1,0,0), object_origin.rotation.x)
+	mesh_vertices[vertex_index] = mesh_vertices[vertex_index].rotated(Vector3(0,1,0), object_origin.rotation.y)
+	mesh_vertices[vertex_index] = mesh_vertices[vertex_index] + object_origin.position
 	return mesh_vertices[vertex_index]
 	
 func reset_points(): #stops visualising points

@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://ck86d0hgjnpnd"]
+
+[ext_resource type="PackedScene" uid="uid://c1xxldbx1vjgo" path="res://part.tscn" id="1_hn5oe"]
+
+[sub_resource type="PrismMesh" id="PrismMesh_k3252"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Node3D" parent="." instance=ExtResource("1_hn5oe")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6198, 1.0757, -0.0188198)
+mesh = SubResource("PrismMesh_k3252")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.55454)
