@@ -1,20 +1,43 @@
-[gd_scene load_steps=3 format=3 uid="uid://c1xxldbx1vjgo"]
+[gd_scene load_steps=7 format=3 uid="uid://c1xxldbx1vjgo"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_au5qi"]
-albedo_color = Color(0.384314, 0, 0.117647, 1)
+[ext_resource type="PackedScene" uid="uid://b0jqqddp2aqie" path="res://smallpart.tscn" id="1_0a8ra"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_yr155"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7l8is"]
+albedo_color = Color(1, 0.941176, 0.117647, 1)
+
+[sub_resource type="PrismMesh" id="PrismMesh_p421g"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_i00py"]
+albedo_color = Color(0.109804, 0.968627, 0, 1)
+
+[sub_resource type="PrismMesh" id="PrismMesh_7tcm4"]
+material = SubResource("StandardMaterial3D_i00py")
+
+[sub_resource type="BoxMesh" id="BoxMesh_loj6g"]
 
 [node name="Node3D" type="Node3D"]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-material_override = SubResource("StandardMaterial3D_au5qi")
-mesh = SubResource("BoxMesh_yr155")
+[node name="parent" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.942641, 0, -0.333807, 0, 1, 0, 0.333807, 0, 0.942641, 0.492964, 1.06842, 3.1678)
+material_override = SubResource("StandardMaterial3D_7l8is")
+mesh = SubResource("PrismMesh_p421g")
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.819152, 0, -0.573576, 0.148453, 0.965926, 0.212012, 0.554032, -0.258819, 0.79124, 0.3, 0.5, -0.5)
-mesh = SubResource("BoxMesh_yr155")
+[node name="child0" type="MeshInstance3D" parent="parent"]
+transform = Transform3D(0.903496, -0.212619, 0.37214, -0.0789161, 0.770902, 0.632046, -0.421268, -0.600419, 0.679728, 0.84458, -0.0201849, -1.91736)
+mesh = SubResource("PrismMesh_7tcm4")
 
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.621202, 0.365998, -0.692931, -0.606107, 0.784885, -0.128798, 0.496732, 0.5, 0.709406, 0.6, -0.1, -0.8)
-mesh = SubResource("BoxMesh_yr155")
+[node name="child1" type="MeshInstance3D" parent="parent"]
+transform = Transform3D(0.873206, 0.197756, 0.445426, -0.208173, 0.977747, -0.025992, -0.440654, -0.0700291, 0.894941, -1.44045, 0, -1.41795)
+mesh = SubResource("PrismMesh_7tcm4")
+
+[node name="child2" type="MeshInstance3D" parent="parent/child1"]
+transform = Transform3D(-0.987586, 0.0314586, -0.153882, -0.117553, -0.79781, 0.591333, -0.104166, 0.602082, 0.791607, -0.672486, -1.12752, -1.79126)
+mesh = SubResource("BoxMesh_loj6g")
+skeleton = NodePath("../..")
+
+[node name="child3" type="MeshInstance3D" parent="parent/child1/child2"]
+transform = Transform3D(0.903496, -0.212619, 0.37214, -0.0789162, 0.770902, 0.632046, -0.421268, -0.600418, 0.679728, 0.686686, 1.25907, -2.93368)
+mesh = SubResource("PrismMesh_7tcm4")
+
+[node name="Smallpart" parent="." instance=ExtResource("1_0a8ra")]
+transform = Transform3D(2.52286e-05, -0.0628632, 0.998022, -0.624817, 0.779226, 0.0490975, -0.780771, -0.623582, -0.0392583, 1.96234, 1.84151, 1.0205)

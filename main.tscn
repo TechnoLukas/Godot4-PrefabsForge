@@ -1,17 +1,18 @@
-[gd_scene load_steps=3 format=3 uid="uid://ck86d0hgjnpnd"]
+[gd_scene load_steps=2 format=3 uid="uid://ck86d0hgjnpnd"]
 
-[ext_resource type="PackedScene" uid="uid://c1xxldbx1vjgo" path="res://part.tscn" id="1_hn5oe"]
-
-[sub_resource type="PrismMesh" id="PrismMesh_k3252"]
+[sub_resource type="BoxMesh" id="BoxMesh_pmx36"]
 
 [node name="Node3D" type="Node3D"]
 
-[node name="Node3D" parent="." instance=ExtResource("1_hn5oe")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2)
-
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6198, 1.0757, -0.0188198)
-mesh = SubResource("PrismMesh_k3252")
+transform = Transform3D(-0.766829, -0.527552, -0.365591, -0.62058, 0.754805, 0.212464, 0.163865, 0.389802, -0.906196, -1.2491, 3.84636, -2.00444)
+mesh = SubResource("BoxMesh_pmx36")
 
-[node name="CSGBox3D" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.55454)
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="MeshInstance3D"]
+transform = Transform3D(-0.797265, -0.328823, 0.506231, -0.0986848, -0.756314, -0.64668, 0.595566, -0.565505, 0.570521, 3.64002, 0.0723205, -3.41405)
+mesh = SubResource("BoxMesh_pmx36")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.436204, -0.891943, -0.118977, 0.831053, 0.34863, 0.433348, -0.34504, -0.287907, 0.893337, 1.5, 1.65205, 1.34932)
+mesh = SubResource("BoxMesh_pmx36")

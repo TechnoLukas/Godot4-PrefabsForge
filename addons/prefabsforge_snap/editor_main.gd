@@ -11,26 +11,29 @@ class_name PrefabsForge
 var undo_redo = EditorPlugin.new().get_undo_redo() #
 
 var selected_objects_old = [] #only to restore the selection (has only MeshInstances inside)
+var meshes_in_scene = []
+var global_position: Vector3
 var ignore_selection = false #controls selection
 
-var mesh_current : MeshInstance3D
-var mesh_current_origin 
-var mesh_vertices_3d : PackedVector3Array # list of 3d point of current mesh
-var mesh_vertices_2d : PackedVector2Array # list of 2d point of current mesh
+class MeshC:
+	var instance: MeshInstance3D = null
+	var origin: Node3D = null
+	var vertices_3d : PackedVector3Array
+	var vertices_2d : PackedVector2Array
 
-var point1 = {"placed"=false,
-			  "visible"=true,
-			  "position_2d"=null,
-			  "position_3d"=null,
-			  "mesh"=null,
-			  "idx"=null}
-			
-var point2 = {"placed"=false,
-			  "visible"=true,
-			  "position_2d"=null,
-			  "position_3d"=null,
-			  "mesh"=null,
-			  "idx"=null}
+var mesh_current: MeshC = MeshC.new()
+
+class Point:
+	var origin: Node3D = null
+	var placed: bool = false
+	var visible: bool = true
+	var position_2d = null
+	var position_3d = null
+	var mesh: MeshInstance3D = null
+	var idx = null
+
+var point1: Point = Point.new()
+var point2: Point = Point.new()
 
 var mouse : Vector2 #stores mouse position
 var event
@@ -61,25 +64,28 @@ func _process(delta):
 	var distance_point_to_mouse : Array
 	if not point1.placed: point1.visible=false
 	if not point2.placed: point2.visible=false
-	if mesh_vertices_2d.size()==0: return;
-	for p in mesh_vertices_2d:
+	if mesh_current.vertices_2d.size()==0: return;
+	for p in mesh_current.vertices_2d:
 		distance_point_to_mouse.append(mouse.distance_to(p))
 		if mouse.distance_to(p) < 12: #detect if user hovers pouse position
 			if not point1.placed:
-				point1.mesh=mesh_current
-				point1.idx=mesh_vertices_2d.find(p)
+				point1.origin=mesh_current.origin
+				point1.mesh=mesh_current.instance
+				point1.idx=mesh_current.vertices_2d.find(p)
 				point1.visible=true
 				
 			if point1.placed and not point2.placed: 
-				point2.mesh=mesh_current
-				point2.idx=mesh_vertices_2d.find(p)
+				point2.origin=mesh_current.origin
+				point2.mesh=mesh_current.instance
+				point2.idx=mesh_current.vertices_2d.find(p)
 				point2.visible=true
 	
-	if point1.idx != null and point1.mesh != null: point1.position_3d=update_point(point1.mesh, point1.idx) #recalculate points position
-	if point2.idx != null and point2.mesh != null: point2.position_3d=update_point(point2.mesh, point2.idx) #recalculate points position
+	if point1.idx != null and point1.mesh != null: point1.position_3d=update_point(point1.mesh, point1.origin, point1.idx) #recalculate points position
+	if point2.idx != null and point2.mesh != null: point2.position_3d=update_point(point2.mesh, point2.origin, point2.idx) #recalculate points position
 	
 	if point1.position_3d != null: point1.position_2d=EditorInterface.get_editor_viewport_3d().get_camera_3d().unproject_position(point1.position_3d)
 	if point2.position_3d != null: point2.position_2d=EditorInterface.get_editor_viewport_3d().get_camera_3d().unproject_position(point2.position_3d)
+
 	
 	if event is InputEventMouseButton and not multi_selection_mode:
 		if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT: 
@@ -94,7 +100,7 @@ func _process(delta):
 				undo_redo.create_action("PrefabsForge Snap") 
 				for o in selected_objects_old:
 					undo_redo.add_undo_property(o, "position", o.position) #saving UNDO action before we moved something
-					o.position=point1.position_3d+(o.position-point2.position_3d) # main snap
+					o.global_position=point1.position_3d+(o.global_position-point2.position_3d) # main snap
 					undo_redo.add_do_property(o, "position", o.position) #saving REDO after before we moved something
 				undo_redo.commit_action()
 				reset_points()
@@ -104,7 +110,7 @@ func _process(delta):
 			
 	if event is InputEventKey:
 		multi_selection_mode = Input.is_key_pressed(KEY_SHIFT)
-			
+	
 	update_points() #recalculate of points lists
 	update_overlays() #update draw method
 
@@ -113,7 +119,10 @@ func _forward_3d_gui_input(cam, ev): # listen to all events
 	event=ev # save all events so we can acces them in "procces"
 			
 func _handles(object): #checking if correct node #MUST for 3d plugins
-	return object is MeshInstance3D or not object.scene_file_path.is_empty() # or object is MultiNodeEdit (strangely not implemented or nothing there)
+	if object is Node3D:
+		return object is MeshInstance3D or not object.scene_file_path.is_empty()
+	else:
+		return object is MeshInstance3D # or object is MultiNodeEdit (strangely not implemented or nothing there)
 	
 func _forward_3d_draw_over_viewport(viewport_control): #main draw method
 	if point1.position_2d == null and point2.position_2d == null: return
@@ -129,72 +138,84 @@ func _forward_3d_draw_over_viewport(viewport_control): #main draw method
 func _selection_changed():
 	var selected_objects = EditorInterface.get_selection().get_transformable_selected_nodes()
 	var everything_ok = true
+	
 	for o in selected_objects: 
 		if o.scene_file_path.is_empty():
 			if not _handles(o): #we must check every object in the selection so there would be no errors
 				everything_ok=false
 	if (selected_objects.size()>0 and everything_ok): #checking if everything is ok
 		selected_objects_old = selected_objects
+		mesh_current.origin=selected_objects[-1] # setting mesh parent (origin), from it we will calculate all shifts and rotations
 		if not selected_objects[-1].scene_file_path.is_empty(): # Detects if selected object is a scene
-			mesh_current_origin=selected_objects[-1]
-			mesh_current=selected_objects[-1].get_children()[0]
+			meshes_in_scene = []
+			get_all_children(selected_objects[-1])
+			
+			var global_vertex_list : PackedVector3Array
+			for m in meshes_in_scene:
+				for fi in range(m.mesh.get_faces().size()):
+					global_vertex_list.append(update_point(m, m, fi))					
+
+			var faces_array = []
+			faces_array.resize(Mesh.ARRAY_MAX)
+			faces_array[Mesh.ARRAY_VERTEX] = global_vertex_list
+			
+			var new_mesh_instance= MeshInstance3D.new()
+			new_mesh_instance.mesh = ArrayMesh.new()
+			
+			new_mesh_instance.mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, faces_array)
+			new_mesh_instance.position=selected_objects[-1].position
+			mesh_current.instance=new_mesh_instance
 		else:
-			mesh_current=selected_objects[-1] #making the last item in the selection as current mesh
-		
+			mesh_current.instance=selected_objects[-1] #making the last item in the selection as current mesh
 		update_points()
 	else:
 		if ignore_selection: return
 		if in_circle: #if user clicked on the circle but mouse did not hit the mesh, we don't want to loose everything, so we need to restore it
 			for s in selected_objects_old: # VERY GLITCHY
 				EditorInterface.get_selection().add_node(s)
-				await get_tree().create_timer(0.1).timeout #timer in cuurent situation is must, without it, it doesn't work
-			mesh_current=selected_objects_old[-1] # restoring the current mesh
+				#await get_tree().create_timer(0.1).timeout #timer in cuurent situation is must, without it, it doesn't work
+			mesh_current.instance=selected_objects_old[-1] # restoring the current mesh
 			ignore_selection=true
 			return
 		else:
 			reset_points()
 			
 func update_points(): # recalculates all possible snap points of selected mesh
-	if mesh_current == null: return
-	if mesh_current.mesh == null: return
-	mesh_vertices_3d = PackedVector3Array(mesh_current.mesh.get_faces())
-	mesh_vertices_2d = PackedVector2Array([])
-	for v in mesh_vertices_3d:
-		v = update_point(mesh_current,mesh_vertices_3d.find(v))
+	if mesh_current.instance == null: return
+	if mesh_current.instance.mesh == null: return
+	mesh_current.vertices_3d = PackedVector3Array(mesh_current.instance.mesh.get_faces())
+	mesh_current.vertices_2d = PackedVector2Array([])
+	for v in mesh_current.vertices_3d:
+		v = update_point(mesh_current.instance,mesh_current.origin,mesh_current.vertices_3d.find(v))
 		var point_2d = EditorInterface.get_editor_viewport_3d().get_camera_3d().unproject_position(v)
-		mesh_vertices_2d.append(point_2d)
+		mesh_current.vertices_2d.append(point_2d)
 
 		
-func update_point(mesh,vertex_index): #calculates point position knowing its mesh and index
+func update_point(mesh,mesh_origin,vertex_index): #calculates point position knowing its mesh and index
 	if mesh == null: return
-	var object_origin
-	object_origin=mesh_current_origin
-	#object_origin=mesh
-	
 	var mesh_vertices = PackedVector3Array(mesh.mesh.get_faces())
-	mesh_vertices[vertex_index] = mesh_vertices[vertex_index].rotated(Vector3(0,0,1), object_origin.rotation.z)
-	mesh_vertices[vertex_index] = mesh_vertices[vertex_index].rotated(Vector3(1,0,0), object_origin.rotation.x)
-	mesh_vertices[vertex_index] = mesh_vertices[vertex_index].rotated(Vector3(0,1,0), object_origin.rotation.y)
-	mesh_vertices[vertex_index] = mesh_vertices[vertex_index] + object_origin.position
+	mesh_vertices[vertex_index] = mesh_vertices[vertex_index].rotated(Vector3(0,0,1), mesh_origin.global_rotation.z)
+	mesh_vertices[vertex_index] = mesh_vertices[vertex_index].rotated(Vector3(1,0,0), mesh_origin.global_rotation.x)
+	mesh_vertices[vertex_index] = mesh_vertices[vertex_index].rotated(Vector3(0,1,0), mesh_origin.global_rotation.y)
+
+	mesh_vertices[vertex_index] = mesh_vertices[vertex_index] + mesh_origin.global_position - mesh_origin.get_owner().global_position
+	
+	mesh_vertices[vertex_index] = mesh_vertices[vertex_index].rotated(Vector3(0,1,0), -mesh_origin.get_owner().global_rotation.y)
+	mesh_vertices[vertex_index] = mesh_vertices[vertex_index].rotated(Vector3(1,0,0), -mesh_origin.get_owner().global_rotation.x)
+	mesh_vertices[vertex_index] = mesh_vertices[vertex_index].rotated(Vector3(0,0,1), -mesh_origin.get_owner().global_rotation.z)
 	return mesh_vertices[vertex_index]
 	
 func reset_points(): #stops visualising points
-
-	mesh_current = null 
-	mesh_vertices_3d = PackedVector3Array([])
-	mesh_vertices_2d = PackedVector2Array([])
+	mesh_current= MeshC.new()	
+	point1 = Point.new()
+	point2 = Point.new()
 	
-	point1 = {"placed"=false,
-			  "visible"=true,
-			  "position_2d"=null,
-			  "position_3d"=null,
-			  "mesh"=null,
-			  "idx"=null}
-			
-	point2 = {"placed"=false,
-			  "visible"=true,
-			  "position_2d"=null,
-			  "position_3d"=null,
-			  "mesh"=null,
-			  "idx"=null}
+func get_all_children(in_node,arr:=[]):
+	arr.push_back(in_node)
+	if in_node is MeshInstance3D:
+		meshes_in_scene.append(in_node)
+	for child in in_node.get_children():
+		if child.scene_file_path.is_empty():
+			arr = get_all_children(child,arr)
+	return arr
 
