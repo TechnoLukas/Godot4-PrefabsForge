@@ -1,0 +1,81 @@
+[gd_scene load_steps=2 format=3 uid="uid://cnssrlmd4bc8u"]
+
+[ext_resource type="Script" path="res://addons/prefabsforge_model2prefab/menu.gd" id="1_ny4r7"]
+
+[node name="Prefabs Model2Prefab" type="Control"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ny4r7")
+
+[node name="menu" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="menu"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="menu/VBoxContainer"]
+layout_mode = 2
+
+[node name="import_path_button" type="Button" parent="menu/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Import (models) folder"
+
+[node name="import_path_clear" type="Button" parent="menu/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Clear"
+
+[node name="import_path_label" type="Label" parent="menu/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "..."
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="menu/VBoxContainer"]
+layout_mode = 2
+
+[node name="export_path_button" type="Button" parent="menu/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Export (prefabs) folder"
+
+[node name="export_path_clear" type="Button" parent="menu/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Clear"
+
+[node name="export_path_label" type="Label" parent="menu/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "..."
+
+[node name="export_button" type="Button" parent="menu/VBoxContainer"]
+layout_mode = 2
+text = "Convert Models to Prefabs"
+
+[node name="import_filedialog" type="FileDialog" parent="menu"]
+title = "Open an Import Directory"
+initial_position = 2
+size = Vector2i(784, 500)
+ok_button_text = "Select Current Folder"
+mode_overrides_title = false
+file_mode = 2
+
+[node name="export_filedialog" type="FileDialog" parent="menu"]
+title = "Open an Export Directory"
+initial_position = 2
+size = Vector2i(784, 500)
+ok_button_text = "Select Current Folder"
+mode_overrides_title = false
+file_mode = 2
+
+[connection signal="pressed" from="menu/VBoxContainer/HBoxContainer/import_path_button" to="." method="_on_import_path_button_pressed"]

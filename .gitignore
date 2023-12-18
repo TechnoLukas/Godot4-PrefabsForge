@@ -19,3 +19,4 @@ data_*/
 mono_crash.*.json
 
 # End of https://www.toptal.com/developers/gitignore/api/godot
+addons/prefabsforge_scenepreview/assets/images/AlpineMountain_SM_Env_Background_Trees_01.png

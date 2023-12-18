@@ -6,7 +6,7 @@ https://www.youtube.com/watch?v=42q6vZSvtxc
 
 @tool
 extends EditorPlugin
-class_name PrefabsForge
+class_name PrefabsForge_Snap
 
 var undo_redo = EditorPlugin.new().get_undo_redo() #
 
