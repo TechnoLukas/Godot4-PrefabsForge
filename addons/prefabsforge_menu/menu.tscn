@@ -54,24 +54,24 @@ layout_mode = 2
 [node name="rotate_x" type="Button" parent="menu/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(1, 0.219608, 0.219608, 1)
-theme_override_colors/font_pressed_color = Color(1, 0.219608, 0.219608, 1)
-theme_override_colors/font_hover_color = Color(1, 0.219608, 0.219608, 1)
-theme_override_colors/font_focus_color = Color(1, 0.219608, 0.219608, 1)
-theme_override_colors/font_hover_pressed_color = Color(1, 0.219608, 0.219608, 1)
 theme_override_colors/font_disabled_color = Color(1, 0.219608, 0.219608, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 0.219608, 0.219608, 1)
+theme_override_colors/font_hover_color = Color(1, 0.219608, 0.219608, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.219608, 0.219608, 1)
+theme_override_colors/font_focus_color = Color(1, 0.219608, 0.219608, 1)
+theme_override_colors/font_color = Color(1, 0.219608, 0.219608, 1)
 text = "rotate x"
 text_overrun_behavior = 4
 
 [node name="rotate_y" type="Button" parent="menu/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.219608, 1, 0.388235, 1)
-theme_override_colors/font_pressed_color = Color(0.219608, 1, 0.388235, 1)
-theme_override_colors/font_hover_color = Color(0.219608, 1, 0.388235, 1)
-theme_override_colors/font_focus_color = Color(0.219608, 1, 0.388235, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.219608, 1, 0.388235, 1)
 theme_override_colors/font_disabled_color = Color(0.219608, 1, 0.388235, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.219608, 1, 0.388235, 1)
+theme_override_colors/font_hover_color = Color(0.219608, 1, 0.388235, 1)
+theme_override_colors/font_pressed_color = Color(0.219608, 1, 0.388235, 1)
+theme_override_colors/font_focus_color = Color(0.219608, 1, 0.388235, 1)
+theme_override_colors/font_color = Color(0.219608, 1, 0.388235, 1)
 text = "rotate y
 "
 text_overrun_behavior = 3
@@ -79,12 +79,12 @@ text_overrun_behavior = 3
 [node name="rotate_z" type="Button" parent="menu/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_colors/font_color = Color(0.219608, 0.466667, 1, 1)
-theme_override_colors/font_pressed_color = Color(0.219608, 0.466667, 1, 1)
-theme_override_colors/font_hover_color = Color(0.219608, 0.466667, 1, 1)
-theme_override_colors/font_focus_color = Color(0.219608, 0.466667, 1, 1)
-theme_override_colors/font_hover_pressed_color = Color(0.219608, 0.466667, 1, 1)
 theme_override_colors/font_disabled_color = Color(0.219608, 0.466667, 1, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.219608, 0.466667, 1, 1)
+theme_override_colors/font_hover_color = Color(0.219608, 0.466667, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.219608, 0.466667, 1, 1)
+theme_override_colors/font_focus_color = Color(0.219608, 0.466667, 1, 1)
+theme_override_colors/font_color = Color(0.219608, 0.466667, 1, 1)
 text = "rotate z
 "
 text_overrun_behavior = 2
@@ -96,39 +96,6 @@ max_value = 180.0
 value = 90.0
 update_on_text_changed = true
 select_all_on_focus = true
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="menu/VBoxContainer"]
-layout_mode = 2
-
-[node name="arrange_x" type="Button" parent="menu/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "arrange x"
-text_overrun_behavior = 4
-
-[node name="arrange_y" type="Button" parent="menu/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "arrange y
-"
-text_overrun_behavior = 3
-
-[node name="arrange_z" type="Button" parent="menu/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "arrange z"
-text_overrun_behavior = 2
-
-[node name="arrange_on_grid" type="Button" parent="menu/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "arrange on grid
-"
-text_overrun_behavior = 2
-
-[node name="HSeparator2" type="HSeparator" parent="menu/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/separation = 25
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="menu/VBoxContainer"]
 layout_mode = 2
@@ -152,5 +119,70 @@ label_settings = SubResource("LabelSettings_o37re")
 layout_mode = 2
 text = "t"
 label_settings = SubResource("LabelSettings_0hmo5")
+
+[node name="HSeparator3" type="HSeparator" parent="menu/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="menu/VBoxContainer"]
+layout_mode = 2
+
+[node name="arrange_x" type="Button" parent="menu/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "arrange x"
+text_overrun_behavior = 4
+
+[node name="arrange_y" type="Button" parent="menu/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "arrange y
+"
+text_overrun_behavior = 3
+
+[node name="arrange_z" type="Button" parent="menu/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "arrange z"
+text_overrun_behavior = 2
+
+[node name="HSeparator4" type="HSeparator" parent="menu/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="Label" type="Label" parent="menu/VBoxContainer"]
+layout_mode = 2
+text = "arrange on grid"
+horizontal_alignment = 1
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="menu/VBoxContainer"]
+layout_mode = 2
+
+[node name="arrange_on_grid_horizontally" type="Button" parent="menu/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "horizontally
+"
+text_overrun_behavior = 2
+
+[node name="arrange_on_grid_vertically" type="Button" parent="menu/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "vertically
+"
+text_overrun_behavior = 2
+
+[node name="arrangement_shift" type="SpinBox" parent="menu/VBoxContainer"]
+layout_mode = 2
+focus_next = NodePath("../..")
+max_value = 10.0
+step = 0.5
+value = 5.0
+update_on_text_changed = true
+select_all_on_focus = true
+
+[node name="HSeparator2" type="HSeparator" parent="menu/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 25
 
 [connection signal="gui_input" from="menu/VBoxContainer/rotation_angle" to="." method="_on_rotation_angle_gui_input"]

@@ -1,28 +1,3 @@
-[gd_scene load_steps=7 format=3 uid="uid://ck86d0hgjnpnd"]
-
-[ext_resource type="PackedScene" uid="uid://divnn5at76bxr" path="res://prefabs/SM_Env_Pine_02_.tscn" id="1_vx7an"]
-[ext_resource type="PackedScene" uid="uid://bekrta3okjhv1" path="res://prefabs/SM_Env_Pine_05_.tscn" id="2_gtb0x"]
-[ext_resource type="PackedScene" uid="uid://bwtrrmeq6oj7h" path="res://prefabs/SM_Env_Branch_03.tscn" id="3_061ng"]
-[ext_resource type="PackedScene" uid="uid://cmostdy6yx1ox" path="res://prefabs/SM_Env_Moss_Lumps_03.tscn" id="4_7rju1"]
-[ext_resource type="PackedScene" uid="uid://qm0v1yetltgf" path="res://prefabs/SM_Env_GroundCover_01_.tscn" id="5_yawqq"]
-[ext_resource type="PackedScene" uid="uid://d5cbjvlnx3a2" path="res://prefabs/SM_Prop_Backpack_01.tscn" id="6_lbou6"]
+[gd_scene format=3 uid="uid://ck86d0hgjnpnd"]
 
 [node name="Node3D" type="Node3D"]
-
-[node name="SM_Env_Pine_02_2" parent="." instance=ExtResource("1_vx7an")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7, 0)
-
-[node name="SM_Env_Pine_05_2" parent="." instance=ExtResource("2_gtb0x")]
-transform = Transform3D(1, 0, 0, 0, 0.999999, -1.49012e-08, 0, 1.49012e-08, 0.999999, 4, 2.8, -4.35114e-06)
-
-[node name="SM_Env_Branch_032" parent="." instance=ExtResource("3_061ng")]
-transform = Transform3D(0.984808, 0.173648, 0, -0.173648, 0.984808, 0, 0, 0, 1, -0.512097, 0.263205, 3.9076)
-
-[node name="SM_Env_Moss_Lumps_032" parent="." instance=ExtResource("4_7rju1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4)
-
-[node name="SM_Env_GroundCover_01_2" parent="." instance=ExtResource("5_yawqq")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0.1, 0)
-
-[node name="SM_Prop_Backpack_012" parent="." instance=ExtResource("6_lbou6")]
-transform = Transform3D(1, 0, 0, 0, 0.999999, -1.49012e-08, 0, 1.49012e-08, 0.999999, 1, 0.4, 4.54485e-06)

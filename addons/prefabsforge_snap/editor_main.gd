@@ -165,8 +165,10 @@ func _selection_changed():
 			new_mesh_instance.mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, faces_array)
 			new_mesh_instance.position=selected_objects[-1].position
 			mesh_current.instance=new_mesh_instance
+			
 		else:
 			mesh_current.instance=selected_objects[-1] #making the last item in the selection as current mesh
+		print("Current mesh vertex count: ",mesh_current.instance.mesh.get_faces().size())
 		update_points()
 	else:
 		if ignore_selection: return

@@ -17,8 +17,11 @@ var menu_instance
 var import_path = ""
 var export_path = ""
 
+var supported_file_extensions = ["gltf","glb","obj","fbx"]
+
 func _enter_tree():
 	menu_instance = menu.instantiate()
+	
 	add_control_to_dock(DOCK_SLOT_RIGHT_UR, menu_instance)
 	_make_visible(false)
 	menu_instance.import_path_button.pressed.connect(_import_path_button_pressed)
@@ -70,9 +73,13 @@ func _export_path_clear_button_pressed():
 	
 func _export_button_pressed():
 	for f in DirAccess.get_files_at(import_path):
-		if "gltf" in f and ".import" not in f:
-			var model = load(import_path+f)
-			print(model)
-			var new_scene = model.duplicate();
-			
-			ResourceSaver.save(new_scene, export_path+"/"+f.replace("gltf","tscn"));
+		var file_extensions = f.split(".")[1]
+		if not (file_extensions in supported_file_extensions):
+			push_warning("Unsupported File Extension: "+file_extensions)
+		else:
+			if file_extensions in f and ".import" not in f:
+				var model = load(import_path+f)
+				print(model)
+				var new_scene = model.duplicate();
+				
+				ResourceSaver.save(new_scene, export_path+"/"+f.replace(file_extensions,"tscn"));

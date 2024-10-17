@@ -33,7 +33,8 @@ func _enter_tree():
 	menu_instance.arrange_x.pressed.connect(arrange_x)
 	menu_instance.arrange_y.pressed.connect(arrange_y)
 	menu_instance.arrange_z.pressed.connect(arrange_z)
-	menu_instance.arrange_on_grid.pressed.connect(arrange_on_grid)
+	menu_instance.arrange_on_grid_vertically.pressed.connect(arrange_on_grid_vertically)
+	menu_instance.arrange_on_grid_horizontally.pressed.connect(arrange_on_grid_horizontally)
 	
 
 func _exit_tree():
@@ -101,8 +102,8 @@ func arrange(vector):
 	undo_redo.create_action("PrefabsForge Arrange")
 	for o in selected_objects.slice(1,selected_objects.size()):
 		save_undo(o)
-		var v = Vector3(1,1,1)-vector #inverse vector
-		o.global_position=selected_objects[0].global_position*v
+		var inverse_vector = Vector3(1.0,1.0,1.0)-vector #inverse vector
+		o.global_position=(o.global_position*vector)+(selected_objects[0].global_position*inverse_vector)
 		save_redo(o)
 	undo_redo.commit_action()
 
@@ -130,10 +131,21 @@ func arrange_z():
 	if not selected_objects.is_empty():
 		arrange(Vector3(0,0,1))
 
-func arrange_on_grid():
+func arrange_on_grid_vertically():
+	undo_redo.create_action("PrefabsForge Arrange On Grid")
+	arrange_on_grid(Vector3(0,0,1))
+	undo_redo.commit_action()
+	
+func arrange_on_grid_horizontally():
+	undo_redo.create_action("PrefabsForge Arrange On Grid")
+	arrange_on_grid(Vector3(0,1,0))
+	undo_redo.commit_action()
+
+func arrange_on_grid(vector):
 	var sqrt_len = ceil(sqrt(selected_objects.size()))
 	var i = 0
-	var step = 5
+	var step = menu_instance.arrangement_shift.value #5
+	var reverse_vector = Vector3(1,1,1) - vector
 	undo_redo.create_action("PrefabsForge Arrange On Grid")
 	for x in range(sqrt_len):
 		for y in range(sqrt_len):
@@ -141,7 +153,7 @@ func arrange_on_grid():
 				undo_redo.commit_action()
 				return
 			undo_redo.add_undo_property(selected_objects[i], "position", selected_objects[i].position) #saving UNDO action before we moved something
-			selected_objects[i].global_position=Vector3(x*step,y*step,0)
+			selected_objects[i].global_position=Vector3(x*step,y*step,y*step)*reverse_vector
 			undo_redo.add_do_property(selected_objects[i], "position", selected_objects[i].position) #saving UNDO action before we moved something			
 			i+=1
 	undo_redo.commit_action()

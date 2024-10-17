@@ -28,6 +28,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="file_formats_label" type="Label" parent="menu/VBoxContainer"]
+layout_mode = 2
+text = "Supported file formats: \"gltf\",\"glb\",\"obj\",\"fbx\""
+
 [node name="HBoxContainer" type="HBoxContainer" parent="menu/VBoxContainer"]
 layout_mode = 2
 
@@ -41,7 +45,9 @@ text = "Clear"
 
 [node name="import_path_label" type="Label" parent="menu/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "..."
+text_overrun_behavior = 1
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="menu/VBoxContainer"]
 layout_mode = 2
@@ -56,7 +62,9 @@ text = "Clear"
 
 [node name="export_path_label" type="Label" parent="menu/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "..."
+text_overrun_behavior = 1
 
 [node name="export_button" type="Button" parent="menu/VBoxContainer"]
 layout_mode = 2
